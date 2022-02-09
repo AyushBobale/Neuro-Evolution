@@ -32,28 +32,3 @@ class Brain:
 
         return inputs
 
-'''
-STEP        = 0
-IF_DRAW     = True
-def updateStates(if_draw, clock):
-    global STEP
-    STEP += 1
-    if STEP < NO_OF_STEPS:
-        for i in range(GRID_SIZE):
-            for j in range(GRID_SIZE):
-                if ENV_GRID[i][j]:
-                    if if_draw:
-                          draw(clock, ENV_GRID[i][j])
-                    output = ENV_GRID[i][j].brain.forward_propogate([1,1])
-                    ENV_GRID[i][j].move(output)
-    else:
-        print('Done the no of steps')
-
-def draw(clock, organism):
-    print(clock.get_fps(), STEP)
-    WIN.fill(WHITE)
-    pygame.draw.circle(WIN, organism.color, (organism.pos[0] * SCALER, organism.pos[1] * SCALER), organism.radius)
-    pygame.display.update()
-    
-
-'''

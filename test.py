@@ -1,58 +1,43 @@
-#the brain has to spit out any possible action that can be performed in the environment
-"""
-** implement tanh as the value ranges from -1 to 1 we can move in both direction of the axis
-"""
-from random import random, seed
-from math import exp
-import numpy as np
-"""
-import env
-import pickle
-with open('mylist.pkl', 'wb') as f:
-    pickle.dump(env.ENV_GRID, f)
-"""
+from brain import Brain
+from random import random, choices, seed
+from datetime import datetime
 
-class Brain:    
-    def __init__(self, n_inputs, n_hidden, n_outputs):
-        self.network    = list()
-        hidden_layer    = [{'weights': [random() for i in range(n_inputs + 1)]} for j in range(n_hidden)]
-        self.network.append(hidden_layer)
-        output_layer    = [{'weights':[random() for i in range(n_hidden + 1)]} for j in range(n_outputs)]
-        self.network.append(output_layer)
+bren1 = Brain(2,2,2)
+bren2 = Brain(2,2,2)
 
-    #there is no expected output
-    def activate(self, weights, inputs):
-        activation = weights[-1]
-        for i in range(len(weights)-1):
-            activation += weights[i] * inputs[i]
-        return activation
-
-    def transfer(self, activation):
-        #sigmoid
-        #return 1.0 / (1.0 + exp(-activation))
-        return np.tanh(activation)
-
-    def forward_propogate(self, row):
-        inputs = row
-        for layer in self.network:
-            new_inputs = []
-            for neuron in layer:
-                activation          = self.activate(neuron['weights'], inputs)
-                neuron['output']    = self.transfer(activation)
-                new_inputs.append(neuron['output'])
-            inputs = new_inputs
-
-        return inputs
-
-seed(1)
-'''network = init_network(4,2,2)
-for layer in network:
+for layer in bren1.network:
     print(layer)
-row = [0, 0, 1, 0]
-output = forward_propogate(network, row)
-print(output)'''
-bren = Brain(1,1,1)
-print(bren.network)
-print(bren.forward_propogate([1]))
-print(bren.network)
-#print(env.ENV_GRID)
+print()
+for layer in bren2.network:
+    print(layer)
+print()
+
+NO_OF_INPUTS    = 2 
+NO_OF_OUTPUTS   = 2
+NO_OF_HIDDEN    = 2
+MUTATION_FACTOR = 1
+
+def genomeCombiner(parent_a, parent_b):
+    #complex shit do not change
+    new_brain   = Brain(NO_OF_INPUTS, NO_OF_HIDDEN, NO_OF_HIDDEN)
+    brain_a     = parent_a#.brain
+    brain_b     = parent_b#.brain
+    temp_var    = [1,-1]
+    for layer in range(len(brain_a.network)):
+        for neuron in range(len(brain_a.network[layer])):
+            for weight in range(len(brain_a.network[layer][neuron]['weights'])):
+                seed(datetime.now())
+                direction               = choices(temp_var)
+                multiplicative_factor   = 1 + (direction[0] * MUTATION_FACTOR)/100
+                print(multiplicative_factor) 
+                new_brain.network[layer][neuron]['weights'][weight] = ((brain_a.network[layer][neuron]['weights'][weight] * multiplicative_factor) + (brain_b.network[layer][neuron]['weights'][weight] * multiplicative_factor))/2
+            #for weight in neuron['weights']:
+            #    print(layer, neuron, weight)
+        #print(layer)
+    return new_brain
+
+new_brain = genomeCombiner(bren1, bren2)
+print()
+for layer in new_brain.network:
+    print(layer)
+print()
