@@ -18,7 +18,8 @@ class Organism:
     
     def move(self, direction, env): 
         pos = (round(self.pos[0] + direction[0] * self.speed), round(self.pos[1] + direction[1] * self.speed))
-        if pos[0] < len(env) and pos[1] < len(env):
+        #print(pos)
+        if pos[0] < len(env) and pos[1] < len(env) and pos[0] >= 0 and pos[1] >= 0 :
             if not env[pos[0]][pos[1]]:
                 self.pos = pos
                 return True

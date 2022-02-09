@@ -26,7 +26,7 @@ Each step the grid will be updated
 The grid will store the class organism
 It will have all necessary attributes to draw it on the screen as well as to simulate it
 """
-GRID_SIZE       = 64
+GRID_SIZE       = 128
 GEN             = 0
 GENERATIONS     = [] # will be used to store snapshots of each gen either before survival check or after survival check
 DUMP            = [] # possible functionality of dumping the animation of each gen if real time computation is not posible
@@ -34,9 +34,9 @@ ENV_GRID        = [[False for i in range(GRID_SIZE)] for j in range(GRID_SIZE)]
 #-----------------------------------
 WHITE           = (255,255,255)
 RED             = (255, 0, 0)
-FPS             = 30
+FPS             = 200
 
-SCALER          = 16
+SCALER          = 8
 CIRCLE_SIZE     = SCALER/2
 WIDTH           = GRID_SIZE * SCALER
 HEIGHT          = GRID_SIZE * SCALER
@@ -46,8 +46,8 @@ pygame.display.set_caption('Simulation')
 """
 Populating the environment with the oraganisms
 """
-MUTATION_FACTOR = 50 #change in the weight for my own convinience
-NO_OF_STEPS     = 20
+MUTATION_FACTOR = 50 #% change in the weight for my own convinience
+NO_OF_STEPS     = 150
 NO_ORGANISM     = GRID_SIZE
 ORGANISMS       = []
 STEP            = 0
@@ -59,6 +59,10 @@ NO_OF_HIDDEN    = 2
 
 def randColor():
     return (randrange(0,255),randrange(0,255),randrange(0,255))
+
+def object_to_color(object):
+    h = hash(object)
+    return (h%1000%255,h%1000000//1000%255,h%1000000000//1000000%255)
 
 def populate_env(no_of_organism):
     print('Populating environment : ')
@@ -74,15 +78,8 @@ def populate_env(no_of_organism):
             brain = Brain(NO_OF_INPUTS, NO_OF_HIDDEN, NO_OF_OUTPUTS)
             #ENV_GRID[x][y] = Organism(randColor(), (x,y), CIRCLE_SIZE, brain) #obsolete
             ENV_GRID[x][y] = True
-            ORGANISMS.append(Organism(randColor(), (x,y), CIRCLE_SIZE, brain))
+            ORGANISMS.append(Organism(object_to_color(brain), (x,y), CIRCLE_SIZE, brain))
             i += 1
-    #helper function
-    '''
-    for i in range(GRID_SIZE):
-            for j in range(GRID_SIZE):
-                if ENV_GRID[i][j]:
-                    print(ENV_GRID[i][j].pos)
-    '''
     print('Done Populating environment : ')
 populate_env(NO_ORGANISM)
 #-----------------------------------
@@ -114,8 +111,11 @@ def genomeCombiner(parent_a, parent_b):
     return new_brain
 
 
-def repopulate(ORGANISMS, NO_ORGANISM):
-    while len(ORGANISMS) < NO_ORGANISM:
+def repopulate():
+    global ENV_GRID, ORGANISMS, NO_ORGANISM
+    new_generation  = []
+    ENV_GRID        = [[False for i in range(GRID_SIZE)] for j in range(GRID_SIZE)]
+    while len(new_generation) < NO_ORGANISM:
         seed(datetime.now()) # for generating position
         x,y = randrange(0,GRID_SIZE-1), randrange(0,GRID_SIZE-1)
         if not ENV_GRID[x][y]:
@@ -123,9 +123,10 @@ def repopulate(ORGANISMS, NO_ORGANISM):
             new_organism_brain  = genomeCombiner(parent_a, parent_b)
             new_color           = [(parent_a.color[i] + parent_b.color[i])/2 for i in range(len(parent_a.color))]
             new_color           = tuple(new_color)
-            new_organism        = Organism(new_color, (x,y), CIRCLE_SIZE, new_organism_brain)
-            ORGANISMS.append(new_organism)
+            new_organism        = Organism(object_to_color(new_organism_brain), (x,y), CIRCLE_SIZE, new_organism_brain)
+            new_generation.append(new_organism)
             ENV_GRID[x][y] = True
+    ORGANISMS = new_generation
 
 def update_env(clock):
     global STEP, GEN
@@ -138,7 +139,8 @@ def update_env(clock):
         for org in ORGANISMS:
             pygame.draw.circle(WIN, org.color, ((org.pos[0] * SCALER) + SCALER/2, (org.pos[1] * SCALER) + SCALER/2), org.radius)
             prev_pos = org.pos
-            output = org.brain.forward_propogate([1,1])
+            '''#implement dynamic input'''
+            output = org.brain.forward_propogate([-1,-1])
             if org.move(output, ENV_GRID):
                 ENV_GRID[prev_pos[0]][prev_pos[1]]   = False
                 ENV_GRID[org.pos[0]][org.pos[1]]     = True
@@ -148,7 +150,7 @@ def update_env(clock):
         #input('Press any key and enter to kill all un-fit oragansim :')
         survialCheck(ORGANISMS)
         print('No of survivors', len(ORGANISMS))
-        repopulate(ORGANISMS, NO_ORGANISM)
+        repopulate()
         WIN.fill(WHITE)
         for org in ORGANISMS:
             pygame.draw.circle(WIN, org.color, ((org.pos[0] * SCALER) + SCALER/2, (org.pos[1] * SCALER) + SCALER/2), org.radius)
@@ -162,6 +164,11 @@ def main():
     while run:
         clock.tick(FPS)
         for event in pygame.event.get():
+            ''' Implement pausing
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    continue
+            '''
             if event.type == pygame.QUIT:
                 run = False
         update_env(clock)    
