@@ -21,5 +21,10 @@ class Organism:
         if pos[0] < len(env) and pos[1] < len(env):
             if not env[pos[0]][pos[1]]:
                 self.pos = pos
+                return True
+            else:
+                return False
+        else:
+            return False
         
     
