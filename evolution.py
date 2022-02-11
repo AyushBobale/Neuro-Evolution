@@ -87,17 +87,23 @@ class Evolution:
 
     def evolve(self):
         for gen in range(self.no_of_gens):#single gen
-            steps = []
             # this loop perfroms set tranformations for given no of steps
+            steps = []
             for step in range(self.no_of_steps): # single step 
                 # this for loop is perfroming transformation on over organisms
+                
                 for organism in self.organisms:
                     previous_pos    = organism.pos
                     direction       = organism.brain.forward_propogate(self.input)
                     if organism.move(direction, self.envgrid):
-                        self.envgrid[previous_pos[0]][previous_pos[1]]          = False
+                        self.envgrid[previous_pos[0]][previous_pos[1]]   = False
                         self.envgrid[organism.pos[0]][organism.pos[1]]   = True
                 steps.append(self.organisms)
+
+                print('In step : ',step, self.organisms[0].pos, steps[step][0].pos)
+            #print(steps)
+            for step in range(self.no_of_steps):
+                print('Sanity:', steps[step][0].pos, steps[step][1].pos, steps[step][2].pos, steps[step][3].pos, steps[step][4].pos, steps[step][5].pos, steps[step][6].pos)
             self.replay.append(steps)
             print('Gen : ', gen)
             self.survial_check()
