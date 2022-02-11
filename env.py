@@ -28,7 +28,7 @@ This is our environment a n*n grid
 Where in each a cell one and only one organism can live
 Grid is initiated as a grid of None
 Each step the grid will be updated
-The grid will store the class organism
+The grid will store the class organism [modidfed for optimization]
 It will have all necessary attributes to draw it on the screen as well as to simulate it
 """
 GRID_SIZE       = 64
@@ -39,7 +39,7 @@ ENV_GRID        = [[False for i in range(GRID_SIZE)] for j in range(GRID_SIZE)]
 #-----------------------------------
 WHITE           = (255,255,255)
 RED             = (255, 0, 0)
-FPS             = 500
+FPS             = 5
 
 SCALER          = 16
 CIRCLE_SIZE     = SCALER/2
@@ -52,7 +52,7 @@ pygame.display.set_caption('Simulation')
 Populating the environment with the oraganisms
 """
 MUTATION_FACTOR = 10 #% change in the weight for my own convinience
-NO_OF_STEPS     = 50
+NO_OF_STEPS     = 25
 NO_ORGANISM     = GRID_SIZE
 ORGANISMS       = []
 STEP            = 0
@@ -134,7 +134,7 @@ def repopulate():
     ORGANISMS = new_generation
 
 def update_env(clock):
-    global STEP, GEN, GENERATION
+    global STEP, GEN, GENERATION, ORGANISMS
     STEP += 1
     # to implement changing generation functionality basically implementing evolution
     if STEP < NO_OF_STEPS:
@@ -147,6 +147,7 @@ def update_env(clock):
         #print(ORGANISMS[0].pos, STEP)
         #print('FPS : ', clock.get_fps())
         WIN.fill(WHITE)
+        temp_var = []
         for org in ORGANISMS:
             pygame.draw.circle(WIN, org.color, ((org.pos[0] * SCALER) + SCALER/2, (org.pos[1] * SCALER) + SCALER/2), org.radius)
             prev_pos = org.pos
@@ -155,9 +156,7 @@ def update_env(clock):
             if org.move(output, ENV_GRID):
                 ENV_GRID[prev_pos[0]][prev_pos[1]]   = False
                 ENV_GRID[org.pos[0]][org.pos[1]]     = True
-        #for org in ORGANISMS: 
-            """Some issue here"""
-        #print(ORGANISMS[0].pos)
+            temp_var.append(org)
 
     else:
         for ste in GENERATION:
