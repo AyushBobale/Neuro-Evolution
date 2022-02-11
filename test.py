@@ -1,37 +1,20 @@
-from brain import Brain
-from random import random, choices, seed
-from datetime import datetime
-from organism import Organism
-import pickle
-from replay import Replay
+from evolution import Evolution
 
-dumpfile = open('replay.dump', 'rb')
-gens = pickle.load(dumpfile)
-print(len(gens.root))
-print(len(gens.root[0]))
-print(gens.root[0][1][0].pos)
-
-
-for step in gens.root[10]:
-    print(step[0].pos)
-c = []
-b = []
-a = [i for i in range(5)]
-
-def run():
-    global b, a
-    for i in range(5):
-        b = []
-        for j in range(5):
-            temp_list = []
-            for org in a:
-                org += 1
-                temp_list.append(org)
-            a = temp_list
-            b.append(temp_list)
-        c.append(b)
-run()
-for gen in c:
-    print(gen)
-
-
+SCALER     = 8
+Simulation = Evolution( gridsize        = 64,
+                        no_of_steps     = 25,
+                        no_of_gens      = 5,
+                        circle_size     = SCALER,
+                        no_of_inputs    = 2,
+                        no_of_hidden    = 2,
+                        no_of_outputs   = 2,
+                        mutation_factor = 10,
+)
+Simulation.populate_env()
+replay = Simulation.evolve()
+print("Gens : ",len(replay))
+print("Steps : ",len(replay[0]))
+for gen in replay:
+    for step in gen:
+        print(step[1].pos)
+    break

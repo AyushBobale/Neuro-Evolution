@@ -12,15 +12,17 @@ generations     = pickle.load(dumpfile)
 WHITE           = (255,255,255)
 BLACK           = (0,0,0)
 SCALER          = generations.scaler
-FPS             = 50
+FPS             = 5
 WIDTH           = generations.grid_size * generations.scaler
 HEIGHT          = generations.grid_size * generations.scaler
 WIN             = pygame.display.set_mode((WIDTH, HEIGHT))
 GEN             = 0
 STEP            = 0
-NO_OF_STEPS     = len(generations.root[0])
+NO_OF_STEPS     = len(generations.steps)
+NEW_STEPS       = generations.steps
 print(NO_OF_STEPS)
-print(len(generations.root))
+print(len(generations.steps[0]))
+#print(len(generations.root))
 
 """
 make it such that the game knows which step to display 
@@ -57,6 +59,16 @@ def draw(clock):
                 pygame.display.update()
     """
 
+def new_draw(clock):
+    global STEP
+    WIN.fill(WHITE)
+    for org in generations.steps[STEP]:
+        pygame.draw.circle(WIN, org.color, ((org.pos[0] * SCALER) + SCALER/2, (org.pos[1] * SCALER) + SCALER/2), org.radius)
+    STEP += 1
+    pygame.display.update()
+
+
+
 def main():
     clock = pygame.time.Clock()
     run = True
@@ -70,7 +82,8 @@ def main():
             '''
             if event.type == pygame.QUIT:
                 run = False
-        draw(clock)    
+        #draw(clock) 
+        new_draw(clock)   
 
     pygame.quit()
 

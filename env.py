@@ -49,7 +49,7 @@ WIN             = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Simulation')
 
 """
-Populating the environment with the oraganisms
+Populating the environment with the organisms
 """
 MUTATION_FACTOR = 10 #% change in the weight for my own convinience
 NO_OF_STEPS     = 25
@@ -138,16 +138,14 @@ def update_env(clock):
     STEP += 1
     # to implement changing generation functionality basically implementing evolution
     if STEP < NO_OF_STEPS:
-        GENERATION.append(ORGANISMS)
+        #GENERATION.append(ORGANISMS)
         """
-        There is some issue here that the same last value is appended multiple times in generation for all steps
-        can be verified by the line 160
-        ** creating another temp var is possible solution
+        The issue is in the else part
+        how the generations are appended i guess
         """
         #print(ORGANISMS[0].pos, STEP)
         #print('FPS : ', clock.get_fps())
         WIN.fill(WHITE)
-        temp_var = []
         for org in ORGANISMS:
             pygame.draw.circle(WIN, org.color, ((org.pos[0] * SCALER) + SCALER/2, (org.pos[1] * SCALER) + SCALER/2), org.radius)
             prev_pos = org.pos
@@ -156,16 +154,16 @@ def update_env(clock):
             if org.move(output, ENV_GRID):
                 ENV_GRID[prev_pos[0]][prev_pos[1]]   = False
                 ENV_GRID[org.pos[0]][org.pos[1]]     = True
-            temp_var.append(org)
+        GENERATION.append(ORGANISMS)
+        print(ORGANISMS[0].pos)
 
     else:
+        """REPLAY_DUMP.root.append(GENERATION)
         for ste in GENERATION:
-            print(ste[0].pos)
-            pass
-        REPLAY_DUMP.root.append(GENERATION)
-        GENERATION = []
+            print('check', ste[0].pos)
+        GENERATION = []"""
+        """-----------------------------------------"""
         print('Gen : ',GEN)
-        #input('Press any key and enter to kill all un-fit oragansim :')
         survialCheck(ORGANISMS)
         print('No of survivors', len(ORGANISMS))
         repopulate()
@@ -182,15 +180,14 @@ def main():
     while run:
         clock.tick(FPS)
         for event in pygame.event.get():
-            ''' Implement pausing
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    continue
-            '''
             if event.type == pygame.QUIT:
+                REPLAY_DUMP.steps = GENERATION
+                for ste in REPLAY_DUMP.steps:
+                    print(ste[0].pos)
+                print('rplydump len of steps', len(REPLAY_DUMP.steps))
                 dumpfile = open('replay.dump', 'wb')
-                print(len(REPLAY_DUMP.root))
-                print(len(REPLAY_DUMP.root[0]))
+                #print('No of generations    :',len(REPLAY_DUMP.root))
+                #print('No of steps          :',len(REPLAY_DUMP.root[0]))
                 pickle.dump(REPLAY_DUMP, dumpfile)
                 dumpfile.close()
                 run = False
@@ -198,5 +195,53 @@ def main():
 
     pygame.quit()
 
+'''class Evolution:
+    def __init__(self, gridsize, no_of_steps, no_of_gens):
+        self.organisms      = []
+        self.replaydump     = None
+        self.gridsize       = gridsize
+        self.envgrid        = [[False for i in range(gridsize)] for j in range(gridsize)]
+        self.no_of_steps    = no_of_steps
+        self.no_of_gens     = no_of_gens
+        self.replay         = []
+        self.input          = [-10,-10]             # del this later just a temp fix need to take input dynamically from the env
+
+    def object_to_color(object):
+        h = hash(object)
+        return (h%1000%255,h%1000000//1000%255,h%1000000000//1000000%255)
+
+    def populate_env(self, no_of_inputs, no_of_hidden, no_of_outputs, cirle_size): 
+        i = 0
+        while i < self.no_of_organism:
+            seed(datetime.now())
+            x,y = randrange(0, self.gridsize-1), randrange(0, self.gridsize -1)
+            if not self.envgrid:
+                seed(datetime.now())
+                brain = Brain(no_of_inputs, no_of_hidden, no_of_outputs)
+                self.envgrid[x][y] = True
+                self.organisms.append(Organism(object_to_color(brain), (x,y), cirle_size, brain))
+                i += 1
+        print("Done populating environment : ")
+
+    def evolve(self):
+        for gen in range(self.no_of_gens):#single gen
+            step = []
+            # this loop perfroms set tranformations for given no of steps
+            for step in range(self.no_of_steps): # single step 
+                # this for loop is perfroming transformation on over organisms
+                for organism in self.organisms:
+                    previous_pos    = oragansim.pos
+                    direction       = oragansim.brain.forward_propogate(self.input)
+                    if oragansim.move(direction):
+                        self.envgrid[previous_pos[0]][previous_pos[1]]          = False
+                        self.envgrid[oragansim.pos[0]][self.oragansim.pos[1]]   = True
+                step.append(self.organisms)
+            self.replay.append(step)
+            print('Gen : ', gen)
+            self.survialCheck'''
+    
+
+
+
 if __name__ == "__main__":
-    main()
+    #main()
