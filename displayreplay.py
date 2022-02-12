@@ -5,7 +5,7 @@ Implement dynamic fps
 """
 
 class DisplayReplay:
-    def __init__(self, replaydata, gridsize, scaler, fps):
+    def __init__(self, replaydata, gridsize, scaler, fps, name):
         self.replaydata = replaydata
         self.bgcolor    = (255,255,255)
         self.scaler     = scaler
@@ -15,14 +15,7 @@ class DisplayReplay:
         self.width      = self.gridsize * self.scaler
         self.height     = self.gridsize * self.scaler
         self.window     = pygame.display.set_mode((self.width,self.height))
-    
-    def set_scaler(self, scaler, name):
-        self.scaler     = scaler
-        self.circle_size= self.scaler/2
-        self.width      = self.gridsize * self.scaler
-        self.height     = self.gridsize * self.scaler
-        self.window     = pygame.display.set_mode((self.width,self.height))
-        self.window     = pygame.display.set_caption(name)
+        pygame.display.set_caption(name)
 
     def draw(self):
         """

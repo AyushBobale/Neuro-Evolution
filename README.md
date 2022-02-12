@@ -10,7 +10,23 @@ For each subsequent generation only the ones who survived are allowed to reprodu
 
 A random amount of mutation is done in each generation such that there is possiblity of finding more ideal weights than the ones found in first generation.
 
-## How to run :
+## Sample Screen shots 
+The survival condition here is the organism survives if the it resides in the upper left hand corner
+
+```python
+    organism.pos[0] > self.gridsize/2 and organism.pos[1] > self.gridsize/2
+```
+
+
+
+The color is derived from the hashes of the neural networks thus representing the similarities/dissimilarities between each organism
+
+1. ![Initial generation]('https://github.com/AyushBobale/Neuro-Evolution/images/initialgen.png')
+
+2. ![Later generation]('https://github.com/AyushBobale/Neuro-Evolution/images/latergen.png')
+
+
+## How to run 
 1. Download the repo
 2. Install pygame module 
     ```bash 
@@ -20,8 +36,15 @@ A random amount of mutation is done in each generation such that there is possib
     python main.py
 [The main file upon running will create a file a dump file that can be loade later to run without running the simulation]
 
+## Features to be implemented 
+1. While drawing the simulation post evolution options to skip to generations / speed up drawing speed and reversing .
+2. More dynamic and complex survival checks, multiple survival checks.
+3. Increaing the complexity of the organims adding food, sensory organs, social interactions, etc.
+5. A way to export the adjusted neural network that can be used as an actual problem solver for real world problems.
+4. Trying multithreaded evolution capabilites.
 
-## Refrences :
+
+## Refrences 
 1. [The code for neural network with explanation](https://machinelearningmastery.com/implement-backpropagation-algorithm-scratch-python/)
 
 
