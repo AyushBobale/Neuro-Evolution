@@ -1,81 +1,59 @@
-from brain import Brain
-from random import random, choices, seed
-from datetime import datetime
-from organism import Organism
-import pickle
-
-from replay import Replay
 import pygame
 
-dumpfile        = open('replay.dump', 'rb')
-generations     = pickle.load(dumpfile)
-WHITE           = (255,255,255)
-BLACK           = (0,0,0)
-SCALER          = generations.scaler
-FPS             = 50
-WIDTH           = generations.grid_size * generations.scaler
-HEIGHT          = generations.grid_size * generations.scaler
-WIN             = pygame.display.set_mode((WIDTH, HEIGHT))
-GEN             = 0
-STEP            = 0
-NO_OF_STEPS     = len(generations.root[0])
-print(NO_OF_STEPS)
-print(len(generations.root))
-
 """
-make it such that the game knows which step to display 
-use while loops and increase the counter after a frame update
+Implement dynamic fps
 """
 
-def draw(clock):
-    global GEN, STEP
-    if_draw =  True
-    #while if_draw:
-    if GEN < len(generations.root):
-        if STEP < NO_OF_STEPS:
-            STEP += 1
-            WIN.fill(WHITE)
-            print(GEN, STEP, generations.root[GEN][STEP-1][0].pos)
-            for org in generations.root[GEN][STEP-1]:
-                #print(org.pos)
-                pygame.draw.circle(WIN, org.color, ((org.pos[0] * SCALER) + SCALER/2, (org.pos[1] * SCALER) + SCALER/2), org.radius)
-        else:
-            STEP = 0
-            GEN += 1
-    else:
-        WIN.fill(BLACK)
-    pygame.display.update()
+class DisplayReplay:
+    def __init__(self, replaydata, gridsize, scaler):
+        self.replaydata = replaydata
+        self.bgcolor    = (255,255,255)
+        self.scaler     = scaler
+        self.circle_size= scaler/2
+        self.fps        = 1
+        self.gridsize   = gridsize
+        self.width      = self.gridsize * self.scaler
+        self.height     = self.gridsize * self.scaler
+        self.window     = pygame.display.set_mode((self.width,self.height))
     
+    def set_scaler(self, scaler, name):
+        self.scaler     = scaler
+        self.circle_size= self.scaler/2
+        self.width      = self.gridsize * self.scaler
+        self.height     = self.gridsize * self.scaler
+        self.window     = pygame.display.set_mode((self.width,self.height))
+        self.window     = pygame.display.set_caption(name)
 
-    """
-    for generation in generations.root:
-        for step in generation:
-            WIN.fill(WHITE)
-            for org in step:
-                print(org.pos[0],org.pos[1])
-                pygame.draw.circle(WIN, org.color, ((org.pos[0] * SCALER) + SCALER/2, (org.pos[1] * SCALER) + SCALER/2), org.radius)
-                pygame.display.update()
-    """
-
-def main():
-    clock = pygame.time.Clock()
-    run = True
-    while run:
-        clock.tick(FPS)
-        for event in pygame.event.get():
-            ''' Implement pausing
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    continue
-            '''
-            if event.type == pygame.QUIT:
-                run = False
-        draw(clock)    
-
-    pygame.quit()
-
-
-
-
-if __name__ == "__main__":
-    main()
+    def draw(self):
+        """
+        will encounter the same problem as previous the animation will be too fast
+        we will display all gens in a single frame gotta implement while loop
+        """
+        self.window.fill(self.bgcolor)
+        for org in self.replaydata[self.gen_counter][self.step_counter]:
+            position = ((org.pos[0] * self.scaler) + self.scaler/2, (org.pos[1] * self.scaler) + self.scaler/2)
+            pygame.draw.circle(self.window, org.color, position, self.circle_size)
+        self.step_counter += 1
+        pygame.display.update()
+    
+    def run_replay(self):
+        self.gen_counter    = 0
+        self.step_counter   = 0
+        self.clock          = pygame.time.Clock()
+        self.run            = True
+        while self.run:
+            self.clock.tick(self.fps)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.run = False
+            print(len(self.replaydata))
+            if self.gen_counter < len(self.replaydata):
+                #print('sanity', self.gen_counter)
+                if self.step_counter < len(self.replaydata[0]):
+                    self.draw()
+                else:
+                    self.step_counter   = 0
+                    self.gen_counter    +=1
+            else:
+                self.window.fill((0,0,0))
+        pygame.quit()
