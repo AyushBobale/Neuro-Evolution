@@ -22,7 +22,7 @@ now all simation/pickle dumping/ replaying will be done in main file
 
 class Evolution:
     def __init__(self, gridsize, no_of_steps, no_of_gens, no_of_inputs, no_of_hidden, no_of_outputs, mutation_factor):
-        self.mutation_factor    = mutation_factor
+        self.mutation_factor    = [i for i in range(mutation_factor)]
         self.no_of_inputs       = no_of_inputs
         self.no_of_hidden       = no_of_hidden
         self.no_of_outputs      = no_of_outputs
@@ -35,7 +35,7 @@ class Evolution:
         self.no_of_steps        = no_of_steps
         self.no_of_gens         = no_of_gens
         self.replay             = [] # deprectaed
-        self.input              = [-10,-10]             # del this later just a temp fix need to take input dynamically from the env
+        self.input              = [10, -10]             # del this later just a temp fix need to take input dynamically from the env
 
     def object_to_color(self,object):
         h = hash(object)
@@ -72,7 +72,8 @@ class Evolution:
                 for weight in range(len(brain_a.network[layer][neuron]['weights'])):
                     seed(datetime.now())
                     direction               = choices(temp_var)
-                    multiplicative_factor   = 1 + (direction[0] * self.mutation_factor)/100
+                    mutation_weight         = choices(self.mutation_factor)
+                    multiplicative_factor   = 1 + (direction[0] * mutation_weight[0])/100
                     new_brain.network[layer][neuron]['weights'][weight] = ((brain_a.network[layer][neuron]['weights'][weight] * multiplicative_factor) + (brain_b.network[layer][neuron]['weights'][weight] * multiplicative_factor))/2
         return new_brain
     

@@ -1,9 +1,10 @@
 from evolution import Evolution
 from displayreplay import DisplayReplay
+import pickle
 
 Simulation = Evolution( gridsize        = 128,
                         no_of_steps     = 200,
-                        no_of_gens      = 50,
+                        no_of_gens      = 10,
                         no_of_inputs    = 2,
                         no_of_hidden    = 2,
                         no_of_outputs   = 2,
@@ -14,9 +15,13 @@ print('\n')
 Simulation.populate_env()
 
 replay = Simulation.evolve()
+
+pickle_file = open('replay.pkl', 'wb')
+pickle.dump(replay, pickle_file)
+
 print("Gens : ",len(replay))
 print("Steps : ",len(replay[0]))
 
-show = DisplayReplay(replay, 128, 8)
+show = DisplayReplay(replay, 128, 8, 60)
 show.run_replay()
 

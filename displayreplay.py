@@ -5,12 +5,12 @@ Implement dynamic fps
 """
 
 class DisplayReplay:
-    def __init__(self, replaydata, gridsize, scaler):
+    def __init__(self, replaydata, gridsize, scaler, fps):
         self.replaydata = replaydata
         self.bgcolor    = (255,255,255)
         self.scaler     = scaler
         self.circle_size= scaler/2
-        self.fps        = 1
+        self.fps        = fps
         self.gridsize   = gridsize
         self.width      = self.gridsize * self.scaler
         self.height     = self.gridsize * self.scaler
@@ -46,9 +46,7 @@ class DisplayReplay:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.run = False
-            print(len(self.replaydata))
             if self.gen_counter < len(self.replaydata):
-                #print('sanity', self.gen_counter)
                 if self.step_counter < len(self.replaydata[0]):
                     self.draw()
                 else:
