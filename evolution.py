@@ -6,21 +6,20 @@ from math import exp
 import numpy as np
 from brain import Brain
 from organism import Organism
-from replay import Replay
 from datetime import datetime
 from replaydata import ReplayData
 
 """
 ********************************************************************************************
-I am onto here on something run the test.py file to see the output
-probaly we need to create a new class that exclusively store our replay with position
+create a draw data file based upon the current replay data recived
+delete env .py as an when we are done with the drawing function
+there is no use of env file currently
+same case with display replay
+now all simation/pickle dumping/ replaying will be done in main file
 ********************************************************************************************
 """
 
-'''
-Try and remove the circle_size from this class 
-changes needed to be made in organism class in order to make such modification
-'''
+
 class Evolution:
     def __init__(self, gridsize, no_of_steps, no_of_gens, no_of_inputs, no_of_hidden, no_of_outputs, mutation_factor):
         self.mutation_factor    = mutation_factor
@@ -29,13 +28,13 @@ class Evolution:
         self.no_of_outputs      = no_of_outputs
         self.circle_size        = 4 # deprected
         self.organisms          = []
-        self.replaydump         = None
+        self.replaydump         = None# deprecated
         self.gridsize           = gridsize
         self.no_of_organisms    = gridsize
         self.envgrid            = [[False for i in range(gridsize)] for j in range(gridsize)]
         self.no_of_steps        = no_of_steps
         self.no_of_gens         = no_of_gens
-        self.replay             = []
+        self.replay             = [] # deprectaed
         self.input              = [-10,-10]             # del this later just a temp fix need to take input dynamically from the env
 
     def object_to_color(self,object):
