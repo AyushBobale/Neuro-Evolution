@@ -8,18 +8,26 @@ from brain import Brain
 from organism import Organism
 from replay import Replay
 from datetime import datetime
+from replaydata import ReplayData
+
+"""
+********************************************************************************************
+I am onto here on something run the test.py file to see the output
+probaly we need to create a new class that exclusively store our replay with position
+********************************************************************************************
+"""
 
 '''
 Try and remove the circle_size from this class 
 changes needed to be made in organism class in order to make such modification
 '''
 class Evolution:
-    def __init__(self, gridsize, no_of_steps, no_of_gens, circle_size, no_of_inputs, no_of_hidden, no_of_outputs, mutation_factor):
+    def __init__(self, gridsize, no_of_steps, no_of_gens, no_of_inputs, no_of_hidden, no_of_outputs, mutation_factor):
         self.mutation_factor    = mutation_factor
         self.no_of_inputs       = no_of_inputs
         self.no_of_hidden       = no_of_hidden
         self.no_of_outputs      = no_of_outputs
-        self.circle_size        = circle_size
+        self.circle_size        = 4 # deprected
         self.organisms          = []
         self.replaydump         = None
         self.gridsize           = gridsize
@@ -43,7 +51,7 @@ class Evolution:
                 seed(datetime.now())
                 brain = Brain(self.no_of_inputs, self.no_of_hidden, self.no_of_outputs)
                 self.envgrid[x][y] = True
-                self.organisms.append(Organism(self.object_to_color(brain), (x,y), self.circle_size, brain))
+                self.organisms.append(Organism(self.object_to_color(brain), (x,y), brain))
                 i += 1
         print("Done populating environment : ")
 
@@ -79,37 +87,37 @@ class Evolution:
                 parent_a, parent_b  = choices(self.organisms, k = 2)
                 new_organism_brain  = self.genome_combiner(parent_a, parent_b)
                 new_color           = [(parent_a.color[i] + parent_b.color[i])/2 for i in range(len(parent_a.color))]
-                new_organism        = Organism(self.object_to_color(new_organism_brain), (x,y), self.circle_size, new_organism_brain)
+                new_organism        = Organism(self.object_to_color(new_organism_brain), (x,y), new_organism_brain)
                 new_generation.append(new_organism)
                 self.envgrid[x][y]        = True
         self.organisms = new_generation
         print('Done repopulating')
 
     def evolve(self):
+        self.generations = []
         for gen in range(self.no_of_gens):#single gen
             # this loop perfroms set tranformations for given no of steps
-            steps = []
+            self.steps  = []
             for step in range(self.no_of_steps): # single step 
                 # this for loop is perfroming transformation on over organisms
-                
+                temp_pos = []
                 for organism in self.organisms:
                     previous_pos    = organism.pos
                     direction       = organism.brain.forward_propogate(self.input)
                     if organism.move(direction, self.envgrid):
                         self.envgrid[previous_pos[0]][previous_pos[1]]   = False
                         self.envgrid[organism.pos[0]][organism.pos[1]]   = True
-                steps.append(self.organisms)
-
-                print('In step : ',step, self.organisms[0].pos, steps[step][0].pos)
-            #print(steps)
-            for step in range(self.no_of_steps):
-                print('Sanity:', steps[step][0].pos, steps[step][1].pos, steps[step][2].pos, steps[step][3].pos, steps[step][4].pos, steps[step][5].pos, steps[step][6].pos)
-            self.replay.append(steps)
+                    temp_pos.append(ReplayData(organism.pos, organism.color))
+                self.steps.append(temp_pos)
+                #print('In step : ',step, self.organisms[0].pos, self.steps[step][0].pos)
+            self.generations.append(self.steps)
             print('Gen : ', gen)
             self.survial_check()
             print('No of survivors : ', len(self.organisms))
             self.repopulate()
         print('Done evolution : ')
-        return self.replay
+        return self.generations
     
+
+
 
