@@ -21,9 +21,9 @@ The survival condition here is the organism survives if the it resides in the up
 
 The color is derived from the hashes of the neural networks thus representing the similarities/dissimilarities between each organism
 
-1. ![Initial generation]('https://github.com/AyushBobale/Neuro-Evolution/images/initialgen.png')
+1. ![Initial generation]('https://github.com/AyushBobale/Neuro-Evolution/blob/main/images/initialgen.png')
 
-2. ![Later generation]('https://github.com/AyushBobale/Neuro-Evolution/images/latergen.png')
+2. ![Later generation]('https://github.com/AyushBobale/Neuro-Evolution/blob/main/images/latergen.png')
 
 
 ## How to run 
