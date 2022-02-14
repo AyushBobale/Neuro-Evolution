@@ -35,7 +35,7 @@ class Evolution:
         self.no_of_steps        = no_of_steps
         self.no_of_gens         = no_of_gens
         self.replay             = [] # deprectaed
-        self.input              = [10, -10]             # del this later just a temp fix need to take input dynamically from the env
+        self.input              = [0, 0]             # del this later just a temp fix need to take input dynamically from the env
 
     def object_to_color(self,object):
         h = hash(object)
@@ -56,7 +56,7 @@ class Evolution:
 
     def survial_check(self):
         for organism in self.organisms:
-            if organism.pos[0] > self.gridsize/2 and organism.pos[1] > self.gridsize/2:
+            if organism.pos[0] > self.gridsize/4 and organism.pos[1] > self.gridsize/4:
                 self.envgrid[organism.pos[0]][organism.pos[1]]    = False
                 self.organisms.remove(organism)
         print('Done survival check deleted unfit organisms :')
@@ -103,7 +103,9 @@ class Evolution:
                 temp_pos = []
                 for organism in self.organisms:
                     previous_pos    = organism.pos
-                    direction       = organism.brain.forward_propogate(self.input)
+                    brain_input     = (organism.pos[0]- self.gridsize/2, organism.pos[1] - self.gridsize/2)
+                    brain_input     = self.input
+                    direction       = organism.brain.forward_propogate(brain_input)
                     if organism.move(direction, self.envgrid):
                         self.envgrid[previous_pos[0]][previous_pos[1]]   = False
                         self.envgrid[organism.pos[0]][organism.pos[1]]   = True
