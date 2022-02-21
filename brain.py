@@ -1,13 +1,15 @@
-from random import random, seed
+from random import random, seed, uniform
 from math import exp
 import numpy as np
+rand_range_l = -1
+rand_range_u = 1
 
 class Brain:    
     def __init__(self, n_inputs, n_hidden, n_outputs):
         self.network    = list()
-        hidden_layer    = [{'weights': [random() for i in range(n_inputs + 1)]} for j in range(n_hidden)]
+        hidden_layer    = [{'weights': [uniform(rand_range_l, rand_range_u) for i in range(n_inputs + 1)]} for j in range(n_hidden)]
         self.network.append(hidden_layer)
-        output_layer    = [{'weights':[random() for i in range(n_hidden + 1)]} for j in range(n_outputs)]
+        output_layer    = [{'weights':[uniform(rand_range_l, rand_range_u) for i in range(n_hidden + 1)]} for j in range(n_outputs)]
         self.network.append(output_layer)
 
     #there is no expected output

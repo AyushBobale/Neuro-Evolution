@@ -11,17 +11,12 @@ from replaydata import ReplayData
 
 """
 ********************************************************************************************
-create a draw data file based upon the current replay data recived
-delete env .py as an when we are done with the drawing function
-there is no use of env file currently
-same case with display replay
-now all simation/pickle dumping/ replaying will be done in main file
 ********************************************************************************************
 """
 
 
 class Evolution:
-    def __init__(self, gridsize, no_of_steps, no_of_gens, no_of_inputs, no_of_hidden, no_of_outputs, mutation_factor):
+    def __init__(self, gridsize, org_scaler, no_of_steps, no_of_gens, no_of_inputs, no_of_hidden, no_of_outputs, mutation_factor):
         self.mutation_factor    = [i for i in range(mutation_factor)]
         self.no_of_inputs       = no_of_inputs
         self.no_of_hidden       = no_of_hidden
@@ -30,12 +25,12 @@ class Evolution:
         self.organisms          = []
         self.replaydump         = None# deprecated
         self.gridsize           = gridsize
-        self.no_of_organisms    = gridsize
+        self.no_of_organisms    = gridsize * org_scaler
         self.envgrid            = [[False for i in range(gridsize)] for j in range(gridsize)]
         self.no_of_steps        = no_of_steps
         self.no_of_gens         = no_of_gens
         self.replay             = [] # deprectaed
-        self.input              = [0, 0]             # del this later just a temp fix need to take input dynamically from the env
+        self.input              = (-10, 10)             # del this later just a temp fix need to take input dynamically from the env
 
     def object_to_color(self,object):
         h = hash(object)
@@ -56,7 +51,7 @@ class Evolution:
 
     def survial_check(self):
         for organism in self.organisms:
-            if organism.pos[0] > self.gridsize/4 and organism.pos[1] > self.gridsize/4:
+            if organism.pos[0] < (self.gridsize - self.gridsize/8) and organism.pos[1] < (self.gridsize - self.gridsize/8):
                 self.envgrid[organism.pos[0]][organism.pos[1]]    = False
                 self.organisms.remove(organism)
         print('Done survival check deleted unfit organisms :')
@@ -104,7 +99,8 @@ class Evolution:
                 for organism in self.organisms:
                     previous_pos    = organism.pos
                     brain_input     = (organism.pos[0]- self.gridsize/2, organism.pos[1] - self.gridsize/2)
-                    brain_input     = self.input
+                    #brain_input     = self.input + organism.pos
+                    brain_input     = (0,0)
                     direction       = organism.brain.forward_propogate(brain_input)
                     if organism.move(direction, self.envgrid):
                         self.envgrid[previous_pos[0]][previous_pos[1]]   = False
