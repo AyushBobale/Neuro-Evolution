@@ -2,3 +2,4 @@
 __pycache__/
 *.pyc
 *.pkl
+neat/my_module/custom_environment/custom_environment.egg-info/
