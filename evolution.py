@@ -51,7 +51,7 @@ class Evolution:
 
     def survial_check(self):
         for organism in self.organisms:
-            if organism.pos[0] < (self.gridsize - self.gridsize/8) and organism.pos[1] < (self.gridsize - self.gridsize/8):
+            if organism.pos[0] > self.gridsize * 0.25 and organism.pos[0] < self.gridsize * 0.75:
                 self.envgrid[organism.pos[0]][organism.pos[1]]    = False
                 self.organisms.remove(organism)
         print('Done survival check deleted unfit organisms :')
@@ -100,7 +100,7 @@ class Evolution:
                     previous_pos    = organism.pos
                     brain_input     = (organism.pos[0]- self.gridsize/2, organism.pos[1] - self.gridsize/2)
                     #brain_input     = self.input + organism.pos
-                    brain_input     = (0,0)
+                    brain_input     = (organism.pos[0]/self.gridsize, organism.pos[1]/self.gridsize)
                     direction       = organism.brain.forward_propogate(brain_input)
                     if organism.move(direction, self.envgrid):
                         self.envgrid[previous_pos[0]][previous_pos[1]]   = False

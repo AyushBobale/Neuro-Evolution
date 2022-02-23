@@ -15,9 +15,9 @@ Try to modify the neuron as much as possible
 Implement controls
 """
 Simulation = Evolution( gridsize        = 128,
-                        org_scaler      = 2,
+                        org_scaler      = 4,
                         no_of_steps     = 150,
-                        no_of_gens      = 250,
+                        no_of_gens      = 500,
                         no_of_inputs    = 2,
                         no_of_hidden    = 2,
                         no_of_outputs   = 2,
@@ -37,6 +37,6 @@ pickle.dump(replay, pickle_file)
 print("Gens : ",len(replay))
 print("Steps : ",len(replay[0]))
 
-show = DisplayReplay(replay, Simulation.gridsize, 8, 60, 'Simulation')
-show.run_replay()
+#show = DisplayReplay(replay, Simulation.gridsize, 8, 60, 'Simulation')
+#show.run_replay()
 
