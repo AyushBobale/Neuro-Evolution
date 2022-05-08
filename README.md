@@ -1,5 +1,9 @@
 # Simulating Evolution using Simple Neural Networks
 
+## This project is abandoned to facilitate the creation of a better and improved version of a similar project using the same python NEAT algorithm.
+
+[The link to new Project](https://github.com/AyushBobale/NeuroEvolutionUsingNEAT)
+
 A simple python program that tries to simulate evolution using simple neural networks.
 
 A random sample population is created with each having a feed forward neural network as it's brain attribute.
